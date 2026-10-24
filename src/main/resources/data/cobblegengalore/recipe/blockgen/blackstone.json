@@ -1,0 +1,16 @@
+{
+  "type": "cobblegengalore:blockgen",
+  "result": {
+    "id": "minecraft:blackstone",
+    "count": 1
+  },
+  "left": {
+    "Name": "minecraft:lava"
+  },
+  "right": {
+    "Name": "minecraft:lava"
+  },
+  "modifier": {
+    "Name": "minecraft:blackstone"
+  }
+}
