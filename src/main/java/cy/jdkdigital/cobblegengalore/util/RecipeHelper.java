@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
@@ -55,23 +54,5 @@ public class RecipeHelper
             state = level.getBlockState(pos.relative(dir));
         }
         return state;
-    }
-
-    public static int consumeFluid(Level level, BlockPos pos, Direction dir, int count, boolean simulate) {
-        var fluidCap = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.relative(dir), dir.getOpposite());
-        if (fluidCap != null) {
-            var removedAmount = (int)Math.min(count, Math.floor(fluidCap.getFluidInTank(0).getAmount() / 1000f));
-            if (removedAmount > 0) {
-                if (!simulate) {
-                    fluidCap.getFluidInTank(0).shrink(1000 * removedAmount);
-                }
-                return removedAmount;
-            }
-            return 0;
-        }
-        if (!simulate) {
-            level.setBlockAndUpdate(pos.relative(dir), Blocks.AIR.defaultBlockState());
-        }
-        return 1;
     }
 }

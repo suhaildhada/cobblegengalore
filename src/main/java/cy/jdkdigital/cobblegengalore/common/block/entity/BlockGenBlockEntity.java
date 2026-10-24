@@ -6,7 +6,6 @@ import cy.jdkdigital.cobblegengalore.common.block.BlockGenBlock;
 import cy.jdkdigital.cobblegengalore.common.recipe.BlockGenRecipe;
 import cy.jdkdigital.cobblegengalore.util.RecipeHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -51,39 +50,6 @@ public class BlockGenBlockEntity extends BlockEntity
                 var modifier = (blockEntity.getBlockState().getBlock() instanceof BlockGenBlock block ? block.modifier : 1) * recipe.speed;
                 var production = recipe.result.copy();
                 var maxProduction = (int) (production.getCount() * modifier);
-
-                // Consume fluids
-                var consumedAmountLeft = recipe.consumeLeft ? 0 : maxProduction;
-                var consumedAmountRight = recipe.consumeRight ? 0 : maxProduction;
-
-                if (recipe.consumeLeft || recipe.consumeRight) {
-                    for (Direction dir : Direction.values()) {
-                        if (dir.getAxis().isHorizontal()) {
-                            var state = RecipeHelper.getStateAtPos(level, blockPos, dir);
-                            if (recipe.consumeLeft && state.is(recipe.left.getBlock())) {
-                                consumedAmountLeft = RecipeHelper.consumeFluid(level, blockPos, dir, maxProduction, true);
-                                consumedAmountRight = recipe.consumeRight ? RecipeHelper.consumeFluid(level, blockPos, dir.getOpposite(), maxProduction, true) : consumedAmountLeft;
-                                maxProduction = Math.min(consumedAmountLeft, consumedAmountRight);
-                                RecipeHelper.consumeFluid(level, blockPos, dir, maxProduction, false);
-                                if (recipe.consumeRight) {
-                                    RecipeHelper.consumeFluid(level, blockPos, dir.getOpposite(), maxProduction, false);
-                                }
-                                break;
-                            }
-                            if (recipe.consumeRight && state.is(recipe.right.getBlock())) {
-                                consumedAmountRight = RecipeHelper.consumeFluid(level, blockPos, dir, maxProduction, true);
-                                consumedAmountLeft = recipe.consumeLeft ? RecipeHelper.consumeFluid(level, blockPos, dir.getOpposite(), maxProduction, true) : consumedAmountRight;
-                                maxProduction = Math.min(consumedAmountLeft, consumedAmountRight);
-                                RecipeHelper.consumeFluid(level, blockPos, dir, maxProduction, false);
-                                if (recipe.consumeLeft) {
-                                    RecipeHelper.consumeFluid(level, blockPos, dir.getOpposite(), maxProduction, false);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    maxProduction = Math.min(consumedAmountLeft, consumedAmountRight);
-                }
 
                 if (maxProduction > 0) {
                     production.setCount(maxProduction);

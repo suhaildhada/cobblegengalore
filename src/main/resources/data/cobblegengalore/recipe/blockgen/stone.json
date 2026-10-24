@@ -12,6 +12,5 @@
   },
   "modifier": {
     "Name": "minecraft:stone"
-  },
-  "consumeLeft": true
+  }
 }
